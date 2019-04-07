@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, TextInput, DropDown, Button, TouchableOpacity, 
 import MapView from 'react-native-maps';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
+var Snapchat = require("Snapchat");
+lat, long = Snapchat.getGeoIP();
+
 class Home extends React.Component {
   static navigationOptions = {
     title: 'Pinpoint',
@@ -13,29 +16,22 @@ class Home extends React.Component {
 
     this.state = {
       region: {
-        latitude: 38.819,
-        longitude: 37.6,
-        latitudeDelta: 0.0522,
-        longitudeDelta: 0.0021,
+        lat: 40,
+        lon: -72,
+        latitudeDelta: 0.1522,
+        longitudeDelta: 0.1021,
       },
       markers: [],
       pickerValue: null,
     };
   }
 
-  addMarker(){
-    var p = getLocation()
-    let c = {p.latitude, p.longitude}
-    this.state.markers.push(index++);
-    this.setState({ markers: this.state.markers});
-  }
-
   getLocation(){
     navigator.geolocation.getCurrentPosition (
         function(position){
           console.log(position);
-          this,setState({region,latitude: position.latitude});
-          this,setState({region,longitude: position.longitude});
+          this,setState({region,lat: position.latitude});
+          this,setState({region,lon: position.longitude});
         },
     );
 
@@ -51,20 +47,12 @@ class Home extends React.Component {
   render() {
     const {navigate} = this.props.navigation;
 
-    let markers = this.state.markers.map((c) => {
-      <Marker 
-        coordinate = c
-      />
-    })
-
     return (
       <View style={styles.container}>
         
         <MapView style={styles.map}
           region = {this.state.region}
-          showsUserLocation = {true}>
-          { markers }
-        </MapView>
+          showsUserLocation = {true} />
 
         <Picker
           selectedValue={this.state.pickerValue}
@@ -81,7 +69,7 @@ class Home extends React.Component {
 
         <View style={styles.button}>
           <TouchableOpacity style={{...StyleSheet.absoluteFillObject, }}
-            onPress={this.addMarker} color="#fff">
+            onPress={() => this.props.navigation.navigate('AddLocation')} color="#fff">
             <Text style={{color:'#fff'}}>+</Text>
           </TouchableOpacity>
         
@@ -104,7 +92,7 @@ class AddLocation extends React.Component {
         <TextInput
         keyboardType='numeric'
         placeholder="Rating (1-5)"
-        style={{height: 90, width: 100, position:'absolute', top:25, left:160}}
+        style={{height: 90, backgroundColor: "#fff", width: 100, position:'absolute', top:25, left:160}}
         onChangeText={(text) => this.setState({text})}/>
       </View>
     );
