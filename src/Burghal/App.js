@@ -13,8 +13,8 @@ class Home extends React.Component {
 
     this.state = {
       region: {
-        latitude: 0,
-        longitude: 80,
+        latitude: 38.819,
+        longitude: 37.6,
         latitudeDelta: 0.0522,
         longitudeDelta: 0.0021,
       },
@@ -23,33 +23,48 @@ class Home extends React.Component {
     };
   }
 
-  getLocation() {
+  addMarker(){
+    var p = getLocation()
+    let c = {p.latitude, p.longitude}
+    this.state.markers.push(index++);
+    this.setState({ markers: this.state.markers});
+  }
+
+  getLocation(){
     navigator.geolocation.getCurrentPosition (
         function(position){
           console.log(position);
-          this.setState({region.latitude: position.latitude});
+          this,setState({region,latitude: position.latitude});
+          this,setState({region,longitude: position.longitude});
         },
-      );
+    );
 
     console.log(this.state.region);
     return (this.state.region);
+  }
   
+  componentDidMount() {
+    this.getLocation();
   }
 
-  addMarker(){
-
-  }
 
   render() {
     const {navigate} = this.props.navigation;
 
+    let markers = this.state.markers.map((c) => {
+      <Marker 
+        coordinate = c
+      />
+    })
 
     return (
       <View style={styles.container}>
         
         <MapView style={styles.map}
           region = {this.state.region}
-          showsUserLocation = {true} />
+          showsUserLocation = {true}>
+          { markers }
+        </MapView>
 
         <Picker
           selectedValue={this.state.pickerValue}
@@ -66,7 +81,7 @@ class Home extends React.Component {
 
         <View style={styles.button}>
           <TouchableOpacity style={{...StyleSheet.absoluteFillObject, }}
-            onPress={this.getLocation} color="#fff">
+            onPress={this.addMarker} color="#fff">
             <Text style={{color:'#fff'}}>+</Text>
           </TouchableOpacity>
         
